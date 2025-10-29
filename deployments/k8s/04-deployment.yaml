@@ -43,39 +43,13 @@ spec:
           containerPort: 3000
           protocol: TCP
         
-        # Environment variables from ConfigMap
+        # Environment variables from ConfigMap (non-sensitive) and Secret (sensitive)
+        # All variables from both sources will be loaded into the container
         envFrom:
         - configMapRef:
             name: agent-chat-ui-config
-        
-        # Sensitive environment variables from Secret
-        env:
-        - name: NEXTAUTH_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: agent-chat-ui-secret
-              key: NEXTAUTH_SECRET
-        - name: OCI_ISSUER
-          valueFrom:
-            secretKeyRef:
-              name: agent-chat-ui-secret
-              key: OCI_ISSUER
-        - name: OCI_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: agent-chat-ui-secret
-              key: OCI_CLIENT_ID
-        - name: OCI_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: agent-chat-ui-secret
-              key: OCI_CLIENT_SECRET
-        # Uncomment if using LangGraph with API passthrough
-        # - name: LANGSMITH_API_KEY
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: agent-chat-ui-secret
-        #       key: LANGSMITH_API_KEY
+        - secretRef:
+            name: agent-chat-ui-secret
         
         # Resource limits and requests
         resources:
