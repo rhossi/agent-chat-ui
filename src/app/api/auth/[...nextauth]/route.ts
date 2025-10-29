@@ -1,19 +1,11 @@
 // app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth";
 
-// Validate required environment variables
-if (!process.env.OCI_ISSUER) {
-  throw new Error("Missing required environment variable: OCI_ISSUER");
-}
-if (!process.env.OCI_CLIENT_ID) {
-  throw new Error("Missing required environment variable: OCI_CLIENT_ID");
-}
-if (!process.env.OCI_CLIENT_SECRET) {
-  throw new Error("Missing required environment variable: OCI_CLIENT_SECRET");
-}
-if (!process.env.NEXTAUTH_SECRET) {
-  throw new Error("Missing required environment variable: NEXTAUTH_SECRET");
-}
+// Get environment variables with defaults for build time
+const OCI_ISSUER = process.env.OCI_ISSUER || '';
+const OCI_CLIENT_ID = process.env.OCI_CLIENT_ID || '';
+const OCI_CLIENT_SECRET = process.env.OCI_CLIENT_SECRET || '';
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || '';
 
 const handler = NextAuth({
   debug: true,
@@ -25,10 +17,10 @@ const handler = NextAuth({
       id: "oci",
       name: "OCI Identity Domain",
       type: "oauth",
-      wellKnown: `${process.env.OCI_ISSUER}/.well-known/openid-configuration`,
+      wellKnown: `${OCI_ISSUER}/.well-known/openid-configuration`,
       authorization: { params: { scope: "openid email profile" } },
-      clientId: process.env.OCI_CLIENT_ID,
-      clientSecret: process.env.OCI_CLIENT_SECRET,
+      clientId: OCI_CLIENT_ID,
+      clientSecret: OCI_CLIENT_SECRET,
       idToken: true,
       checks: ["pkce", "state"],
       client: {
