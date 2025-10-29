@@ -45,7 +45,15 @@ kubectl get svc -n agent-chat-ui
 
 ## Configuration
 
-Before deploying, update these files with your values:
+Before deploying, copy and configure these files:
+
+```bash
+# Copy example files
+cp 02-secret.example.yaml 02-secret.yaml
+cp 03-configmap.example.yaml 03-configmap.yaml
+```
+
+Then update with your actual values:
 
 - `02-secret.yaml` - OAuth credentials and secrets
 - `03-configmap.yaml` - Non-sensitive configuration  
