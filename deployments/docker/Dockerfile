@@ -3,18 +3,22 @@ FROM node:18-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 # Copy package files
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml* ./
+# Install pnpm
+RUN npm install -g pnpm
 # Install dependencies
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 # Stage 2: Builder
 FROM node:18-alpine AS builder
 WORKDIR /app
 # Environment variables will be provided at runtime by Kubernetes
+# Install pnpm
+RUN npm install -g pnpm
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Build the application
-RUN npm run build
+RUN pnpm run build
 # Stage 3: Runner
 FROM node:18-alpine AS runner
 WORKDIR /app
